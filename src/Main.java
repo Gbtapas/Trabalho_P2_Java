@@ -1,15 +1,27 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
-public class Main {
-    public static void main(String[] args) {
-        //TIP Press <shortcut actionId="ShowIntentionActions"/> with your caret at the highlighted text
-        // to see how IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+import view.TelaPrincipal;
+import javax.swing.*;
 
-        for (int i = 1; i <= 5; i++) {
-            //TIP Press <shortcut actionId="Debug"/> to start debugging your code. We have set one <icon src="AllIcons.Debugger.Db_set_breakpoint"/> breakpoint
-            // for you, but you can always add more by pressing <shortcut actionId="ToggleLineBreakpoint"/>.
-            System.out.println("i = " + i);
-        }
+/**
+ * Classe principal — ponto de entrada do sistema.
+ *
+ * SwingUtilities.invokeLater() garante que a GUI seja criada
+ * na Event Dispatch Thread (EDT), que é a thread correta para
+ * Swing segundo a documentação oficial do Java.
+ *
+ * UIManager.setLookAndFeel() define o visual do sistema operacional
+ * para que o programa não pareça "feio" com o visual padrão do Java.
+ */
+public class Main {
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (Exception e) {
+                // Se falhar, usa o visual padrão — não é erro crítico
+            }
+            TelaPrincipal tela = new TelaPrincipal();
+            tela.setVisible(true);
+        });
     }
 }
