@@ -16,18 +16,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
-/**
- * Tela CRUD de eventos.
- * Inclui a REGRA DE NEGÓCIO 2: conflito de horário.
- *
- * O JComboBox de organizadores mostra APENAS usuários do tipo ORGANIZADOR.
- * O campo data/hora usa o formato "dd/MM/yyyy HH:mm".
- */
+
 public class TelaGerenciamentoEventos extends JFrame {
 
     private JTextField txtTitulo, txtDescricao, txtDataHora, txtLocal, txtCapacidade;
     private JComboBox<String> cbxCategoria;
-    private JComboBox<Usuario> cbxOrganizador; // guarda objetos Usuario inteiros
+    private JComboBox<Usuario> cbxOrganizador; 
     private JTable tabela;
     private DefaultTableModel modeloTabela;
     private JButton btnSalvar, btnExcluir, btnLimpar;
@@ -45,7 +39,7 @@ public class TelaGerenciamentoEventos extends JFrame {
         JPanel painel = new JPanel(new BorderLayout(10, 10));
         painel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // ===== FORMULÁRIO =====
+        
         JPanel painelForm = new JPanel(new GridLayout(7, 2, 5, 5));
         painelForm.setBorder(BorderFactory.createTitledBorder("Dados do Evento"));
 
@@ -80,7 +74,7 @@ public class TelaGerenciamentoEventos extends JFrame {
         painel.add(painelForm, BorderLayout.NORTH);
         carregarOrganizadores();
 
-        // ===== TABELA =====
+        
         modeloTabela = new DefaultTableModel(
                 new String[]{"ID", "Titulo", "Categoria", "Data/Hora", "Local", "Capac.", "Organizador"}, 0
         ) {
@@ -99,7 +93,7 @@ public class TelaGerenciamentoEventos extends JFrame {
             }
         });
 
-        // ===== BOTÕES =====
+        
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         btnSalvar  = new JButton("Salvar");
         btnExcluir = new JButton("Excluir");
@@ -117,13 +111,13 @@ public class TelaGerenciamentoEventos extends JFrame {
         carregarTabela();
     }
 
-    /** Preenche o combo de organizadores com usuários do tipo ORGANIZADOR */
+    
     private void carregarOrganizadores() {
         try {
             List<Usuario> orgs = usuarioDAO.buscarPorTipo("ORGANIZADOR");
             cbxOrganizador.removeAllItems();
             for (Usuario u : orgs) {
-                cbxOrganizador.addItem(u); // toString() mostra "1 - Maria (ORGANIZADOR)"
+                cbxOrganizador.addItem(u); 
             }
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao carregar organizadores: " + ex.getMessage());
@@ -173,15 +167,7 @@ public class TelaGerenciamentoEventos extends JFrame {
         }
     }
 
-    /**
-     * Salva o evento. Aqui é chamada a REGRA DE NEGÓCIO 2 (conflito de horário).
-     *
-     * Sequência:
-     * 1. Valida campos obrigatórios
-     * 2. Converte a data/hora de String para LocalDateTime
-     * 3. Chama RegrasNegocio.verificarConflitoHorario()
-     * 4. Se passou na validação, salva no banco
-     */
+    
     private void salvar() {
         if (txtTitulo.getText().trim().isEmpty() || txtLocal.getText().trim().isEmpty()
                 || txtDataHora.getText().trim().isEmpty() || txtCapacidade.getText().trim().isEmpty()) {
@@ -226,7 +212,7 @@ public class TelaGerenciamentoEventos extends JFrame {
         ev.setIdOrganizador(((Usuario) cbxOrganizador.getSelectedItem()).getId());
 
         try {
-            // REGRA DE NEGÓCIO 2
+            
             RegrasNegocio.verificarConflitoHorario(ev.getLocalEvento(), ev.getDataHora(), idSelecionado);
 
             if (idSelecionado == 0) {

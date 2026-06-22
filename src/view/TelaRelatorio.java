@@ -8,14 +8,7 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * Tela de relatórios.
- * Exibe uma tabela consolidada com: evento, categoria, data,
- * capacidade, total de inscritos e total de presentes.
- *
- * Os dados vêm do método gerarRelatorio() do EventoDAO,
- * que faz um JOIN entre 3 tabelas.
- */
+
 public class TelaRelatorio extends JFrame {
 
     private JTable tabela;

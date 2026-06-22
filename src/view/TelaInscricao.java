@@ -16,17 +16,7 @@ import java.awt.*;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * Tela de inscrições e registro de presença.
- * Aplica as Regras de Negócio 1 (lotação) e 3 (inscrição duplicada).
- *
- * Fluxo do usuário:
- * 1. Seleciona o evento no combo
- * 2. Seleciona o participante no combo
- * 3. Clica "Inscrever" → sistema valida regras → salva
- * 4. A tabela mostra os inscritos daquele evento
- * 5. Seleciona um inscrito na tabela → "Registrar Presença"
- */
+
 public class TelaInscricao extends JFrame {
 
     private JComboBox<Evento> cbxEvento;
@@ -49,7 +39,7 @@ public class TelaInscricao extends JFrame {
         JPanel painel = new JPanel(new BorderLayout(10, 10));
         painel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // ===== SELEÇÃO (topo) =====
+        
         JPanel painelSel = new JPanel(new GridLayout(2, 2, 5, 5));
         painelSel.setBorder(BorderFactory.createTitledBorder("Nova Inscricao"));
 
@@ -66,10 +56,10 @@ public class TelaInscricao extends JFrame {
         carregarEventos();
         carregarUsuarios();
 
-        // Quando muda o evento, recarrega a tabela de inscritos
+        
         cbxEvento.addActionListener(e -> carregarTabelaInscritos());
 
-        // ===== TABELA =====
+        
         modeloTabela = new DefaultTableModel(
                 new String[]{"ID Inscricao", "Nome", "Tipo", "Data Inscricao", "Presente"}, 0
         ) {
@@ -82,7 +72,7 @@ public class TelaInscricao extends JFrame {
         tabela.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         painel.add(new JScrollPane(tabela), BorderLayout.CENTER);
 
-        // ===== BOTÕES =====
+        
         JPanel painelBotoes = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 5));
         btnInscrever         = new JButton("Inscrever Participante");
         btnRegistrarPresenca = new JButton("Registrar Presenca");
@@ -113,7 +103,7 @@ public class TelaInscricao extends JFrame {
     private void carregarUsuarios() {
         try {
             cbxUsuario.removeAllItems();
-            // Público e voluntários podem se inscrever
+            
             for (Usuario u : usuarioDAO.buscarPorTipo("PUBLICO"))    cbxUsuario.addItem(u);
             for (Usuario u : usuarioDAO.buscarPorTipo("VOLUNTARIO")) cbxUsuario.addItem(u);
         } catch (SQLException ex) {
@@ -133,11 +123,7 @@ public class TelaInscricao extends JFrame {
         }
     }
 
-    /**
-     * Inscreve participante. Aplica:
-     * REGRA 3 → verificarInscricaoDuplicada
-     * REGRA 1 → verificarLotacao
-     */
+    
     private void inscrever() {
         Evento evento = (Evento) cbxEvento.getSelectedItem();
         Usuario usuario = (Usuario) cbxUsuario.getSelectedItem();
@@ -149,11 +135,11 @@ public class TelaInscricao extends JFrame {
         }
 
         try {
-            // Valida regras ANTES de salvar
+            
             RegrasNegocio.verificarInscricaoDuplicada(usuario.getId(), evento.getId());
             RegrasNegocio.verificarLotacao(evento.getId());
 
-            // Passou nas validações → insere
+            
             Inscricao insc = new Inscricao(usuario.getId(), evento.getId());
             inscricaoDAO.inserir(insc);
             JOptionPane.showMessageDialog(this, "Inscricao realizada!");
@@ -168,7 +154,7 @@ public class TelaInscricao extends JFrame {
         }
     }
 
-    /** Registra presença do inscrito selecionado na tabela */
+    
     private void registrarPresenca() {
         int linha = tabela.getSelectedRow();
         if (linha < 0) {
@@ -177,7 +163,7 @@ public class TelaInscricao extends JFrame {
         }
         int idInscricao = (int) modeloTabela.getValueAt(linha, 0);
 
-        // Pergunta se presente ou ausente
+        
         String[] opcoes = {"Presente", "Ausente"};
         int escolha = JOptionPane.showOptionDialog(this, "Registrar presenca:",
                 "Presenca", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
@@ -196,7 +182,7 @@ public class TelaInscricao extends JFrame {
         }
     }
 
-    /** Cancela (exclui) a inscrição selecionada */
+    
     private void cancelarInscricao() {
         int linha = tabela.getSelectedRow();
         if (linha < 0) {
